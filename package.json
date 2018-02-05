@@ -1,0 +1,25 @@
+{
+  "name": "readium-ng-viewer",
+  "version": "0.0.1",
+  "description": "A viewer based on readium-ng",
+  "main": "index.js",
+  "author": "Lili Deng",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "tslint": "^5.9.1",
+    "tslint-config-airbnb": "^5.4.2",
+    "tslint-eslint-rules": "^4.1.1",
+    "tslint-microsoft-contrib": "^5.0.2",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  }
+}
