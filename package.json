@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "readium-ng": "latest"
   },
   "devDependencies": {
     "@types/react": "^16.0.36",
