@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 
 // tslint:disable-next-line:no-implicit-dependencies
-import { Viewport } from 'readium-ng';
+import { Navigator } from 'readium-ng';
 
 export interface IReadiumNGNavControlProps {
-  ngViewport: Viewport | null;
+  navigator: Navigator | null;
 }
 
 export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlProps, {}> {
@@ -26,14 +26,14 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
   }
 
   private async nextScreen(): Promise<void> {
-    if (this.props.ngViewport) {
-      await this.props.ngViewport.nextScreen();
+    if (this.props.navigator) {
+      await this.props.navigator.nextScreen();
     }
   }
 
   private async prevScreen(): Promise<void> {
-    if (this.props.ngViewport) {
-      await this.props.ngViewport.prevScreen();
+    if (this.props.navigator) {
+      await this.props.navigator.previousScreen();
     }
   }
 

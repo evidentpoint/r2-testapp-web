@@ -1,14 +1,14 @@
 import React, { ReactNode } from 'react';
 
 // tslint:disable-next-line:no-implicit-dependencies
-import { LayoutView, Publication, StreamerClient, Viewport } from 'readium-ng';
+import { Publication, Rendition, StreamerClient } from 'readium-ng';
 
 export interface IReadiumNGViewProps {
   viewportWidth: number;
   viewportHeight: number;
   pageHeight: number;
   pageWidth: number;
-  onViewportCreated(vp: Viewport): void;
+  onRenditionCreated(rend: Rendition): void;
 }
 
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
@@ -16,7 +16,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
   private root: HTMLElement | null = null;
 
-  private viewport: Viewport | null = null;
+  private rendition?: Rendition;
 
   private publication: Publication | undefined;
 
@@ -38,9 +38,6 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       return Promise.resolve();
     }
 
-    this.viewport = new Viewport(this.root);
-    this.props.onViewportCreated(this.viewport);
-
     await this.openPublication('/asserts/publications/metamorphosis/manifest.json');
   }
 
@@ -49,21 +46,20 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
   }
 
   public async openPublication(webpubUrl: string): Promise<void> {
-    if (!this.viewport) {
+    if (!this.root) {
       return Promise.resolve();
     }
 
     this.publication = await this.streamerClient.openPublicationFromUrl(webpubUrl);
 
-    const layoutView = new LayoutView(this.publication);
-    layoutView.setPageSize(this.props.pageWidth, this.props.pageHeight);
+    this.rendition = new Rendition(this.publication, this.root);
+    this.rendition.viewport.setViewportSize(this.props.viewportWidth);
+    this.rendition.setPageSize(this.props.pageWidth, this.props.pageHeight);
 
-    this.viewport.setView(layoutView);
-    this.viewport.setViewportSize(this.props.viewportWidth);
+    this.props.onRenditionCreated(this.rendition);
 
-    await this.viewport.renderAtOffset(0);
+    this.rendition.render();
+    this.rendition.viewport.renderAtOffset(0);
     // await this.viewport.renderAtSpineItem(4);
   }
-
-  
 }

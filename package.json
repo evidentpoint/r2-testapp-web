@@ -6,7 +6,7 @@
   "author": "Lili Deng",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && webpack"
   },
   "dependencies": {
     "react": "^16.2.0",
