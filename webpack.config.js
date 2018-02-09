@@ -1,14 +1,29 @@
 module.exports = {
   context: __dirname,
   devtool: "inline-source-map",
-  entry: "./build_temp/src/main.js",
+  entry: "./src/index.tsx",
   output: {
     path: __dirname + "/public",
     filename: "bundle.js"
   },
   resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js'
-    }
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json"]
+  },
+  module: {
+    rules: [
+      // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader"
+      },
+
+      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
+      }
+    ]
   }
 };

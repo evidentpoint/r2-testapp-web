@@ -5,18 +5,16 @@
       "dom"
     ],
     "target": "es2017",
-    "module": "es6",
+    "module": "es2015",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
     "strict": true,
     "sourceMap": true,
     "jsx": "react",
     "rootDir": "./",
     "rootDirs": [
       "./src/",
-    ],
-    "outDir": "./build_temp",
+    ]
   }
 }
