@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 
-// tslint:disable-next-line:no-implicit-dependencies
 import { Publication, Rendition, StreamerClient } from 'readium-ng';
 
 export interface IReadiumNGViewProps {

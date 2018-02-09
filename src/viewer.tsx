@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import { ReadiumNGNavControl } from './ng-nav-control';
 import { ReadiumNGView } from './ng-view';
 
-// tslint:disable-next-line:no-implicit-dependencies
 import { Navigator, Rendition } from 'readium-ng';
 
 export interface IReadiumNGViewerStates {
