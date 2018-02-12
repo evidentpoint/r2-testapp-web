@@ -7,6 +7,7 @@ export interface IReadiumNGViewProps {
   viewportHeight: number;
   pageHeight: number;
   pageWidth: number;
+  enableScroll: boolean;
   onRenditionCreated(rend: Rendition): void;
 }
 
@@ -53,6 +54,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
     this.rendition = new Rendition(this.publication, this.root);
     this.rendition.viewport.setViewportSize(this.props.viewportWidth);
+    this.rendition.viewport.enableScroll(this.props.enableScroll);
     this.rendition.setPageSize(this.props.pageWidth, this.props.pageHeight);
 
     this.props.onRenditionCreated(this.rendition);
