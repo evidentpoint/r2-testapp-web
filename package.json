@@ -8,6 +8,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "npm run build -- --watch",
+    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "serve": "static public"
   },
   "dependencies": {
