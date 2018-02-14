@@ -8,6 +8,7 @@ export interface IReadiumNGViewProps {
   pageHeight: number;
   pageWidth: number;
   enableScroll: boolean;
+  viewAsVertical: boolean;
   onRenditionCreated(rend: Rendition): void;
 }
 
@@ -53,13 +54,21 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.publication = await this.streamerClient.openPublicationFromUrl(webpubUrl);
 
     this.rendition = new Rendition(this.publication, this.root);
-    this.rendition.viewport.setViewportSize(this.props.viewportWidth);
-    this.rendition.viewport.enableScroll(this.props.enableScroll);
+    this.rendition.setVeiwAsVertical(this.props.viewAsVertical);
+
+    if (this.props.viewAsVertical) {
+      this.rendition.viewport.setViewportSize(this.props.viewportHeight);
+    } else {
+      this.rendition.viewport.setViewportSize(this.props.viewportWidth);
+    }
+
     this.rendition.setPageSize(this.props.pageWidth, this.props.pageHeight);
 
     this.props.onRenditionCreated(this.rendition);
 
     this.rendition.render();
+    this.rendition.viewport.enableScroll(this.props.enableScroll);
+
     this.rendition.viewport.renderAtOffset(0);
     // await this.viewport.renderAtSpineItem(4);
   }
