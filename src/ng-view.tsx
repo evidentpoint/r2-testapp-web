@@ -56,11 +56,10 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.rendition = new Rendition(this.publication, this.root);
     this.rendition.setVeiwAsVertical(this.props.viewAsVertical);
 
-    if (this.props.viewAsVertical) {
-      this.rendition.viewport.setViewportSize(this.props.viewportHeight);
-    } else {
-      this.rendition.viewport.setViewportSize(this.props.viewportWidth);
-    }
+    const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
+                                                     this.props.viewportWidth;
+    this.rendition.viewport.setViewportSize(viewportSize);
+    this.rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
 
     this.rendition.setPageSize(this.props.pageWidth, this.props.pageHeight);
 
