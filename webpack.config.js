@@ -1,9 +1,15 @@
+const path = require("path");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+
 module.exports = {
   context: __dirname,
-  devtool: "inline-source-map",
+  devtool: "source-map",
+  devServer: {
+    contentBase: "./public"
+  },
   entry: "./src/index.tsx",
   output: {
-    path: __dirname + "/public",
+    path: path.resolve(__dirname, "public"),
     filename: "bundle.js"
   },
   resolve: {
@@ -25,5 +31,11 @@ module.exports = {
         loader: "source-map-loader"
       }
     ]
-  }
+  },
+  plugins: [
+    // Uncomment for minification:
+    // new UglifyJSPlugin({
+    //   sourceMap: true
+    // })
+  ]
 };

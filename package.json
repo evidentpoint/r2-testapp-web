@@ -9,7 +9,8 @@
     "build": "webpack",
     "watch": "npm run build -- --watch",
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
-    "serve": "static -H '{\"Cache-Control\": \"no-cache, must-revalidate\"}' public"
+    "serve": "static -a 0.0.0.0 -H '{\"Cache-Control\": \"no-cache, must-revalidate\"}' public",
+    "start": "webpack-dev-server --open"
   },
   "dependencies": {
     "react": "^16.2.0",
@@ -28,6 +29,8 @@
     "tslint-eslint-rules": "^4.1.1",
     "tslint-microsoft-contrib": "^5.0.2",
     "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "uglifyjs-webpack-plugin": "^1.1.8",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
   }
 }
