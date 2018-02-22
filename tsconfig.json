@@ -14,7 +14,7 @@
     "jsx": "react",
     "rootDir": "./",
     "rootDirs": [
-      "./src/",
+      "./src/"
     ]
   }
 }
