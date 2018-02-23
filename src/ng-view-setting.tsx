@@ -8,6 +8,7 @@ export interface IReadiumNGViewSettingProps {
 
 export interface IReadiumNGViewerSettingStates {
   pageWidth: number;
+  fontSize: number;
 }
 
 export class ReadiumNGViewSetting extends
@@ -15,8 +16,9 @@ export class ReadiumNGViewSetting extends
 
   constructor(props: IReadiumNGViewSettingProps) {
     super(props);
-    this.state = { pageWidth: 400 };
+    this.state = { pageWidth: 400, fontSize: 100 };
     this.saveViewSetting = this.saveViewSetting.bind(this);
+    this.savePageWidth = this.savePageWidth.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -25,7 +27,14 @@ export class ReadiumNGViewSetting extends
       <div>
         <label>
           Page Width:
-          <input type="text" value={ this.state.pageWidth } onChange={ this.handleChange } />
+          <input type="text" name="pageWidth" value={ this.state.pageWidth }
+                 onChange={ this.handleChange } />
+        </label>
+        <button onClick={ this.savePageWidth }>Update</button>
+        <label>
+          Font Size:
+          <input type="text" name="fontSize" value={ this.state.fontSize }
+                 onChange={ this.handleChange } />
         </label>
         <button onClick={ this.saveViewSetting }>Update</button>
       </div>
@@ -39,15 +48,31 @@ export class ReadiumNGViewSetting extends
       return;
     }
 
-    this.setState({ pageWidth: newVal });
+    const elementName = event.currentTarget.name;
+    if (elementName === 'pageWidth') {
+      this.setState({ pageWidth: newVal });
+    } else if (elementName === 'fontSize') {
+      this.setState({ fontSize: newVal });
+    }
   }
 
-  private saveViewSetting(): void {
+  private async saveViewSetting(): Promise<void> {
+    if (!this.props.rendition) {
+      return;
+    }
+
+    await this.props.rendition.updateViewSettings({ fontSize: this.state.fontSize });
+
+    this.props.rendition.viewport.renderAtOffset(0);
+  }
+
+  private savePageWidth(): void {
     if (!this.props.rendition) {
       return;
     }
 
     this.props.rendition.setPageSize(this.state.pageWidth, 800);
+
     this.props.rendition.viewport.renderAtOffset(0);
   }
 
