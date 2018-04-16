@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Publication, Rendition, StreamerClient } from 'readium-ng';
+import { Publication, Rendition } from 'readium-ng';
 
 export interface IReadiumNGViewProps {
   viewportWidth: number;
@@ -13,7 +13,6 @@ export interface IReadiumNGViewProps {
 }
 
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
-  private streamerClient: StreamerClient;
 
   private root: HTMLElement | null = null;
 
@@ -23,7 +22,6 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
   constructor(props: IReadiumNGViewProps) {
     super(props);
-    this.streamerClient = new StreamerClient();
     this.updateRoot = this.updateRoot.bind(this);
   }
 
@@ -39,7 +37,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       return Promise.resolve();
     }
 
-    await this.openPublication('/asserts/publications/metamorphosis/manifest.json');
+    await this.openPublication(`${location.origin}/asserts/publications/wasteland-otf-obf/`);
   }
 
   public updateRoot(root: HTMLElement | null): void {
@@ -50,9 +48,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     if (!this.root) {
       return Promise.resolve();
     }
-
-    this.publication = await this.streamerClient.openPublicationFromUrl(webpubUrl);
-
+    this.publication = await Publication.fromURL(webpubUrl);
     this.rendition = new Rendition(this.publication, this.root);
     this.rendition.setVeiwAsVertical(this.props.viewAsVertical);
 
