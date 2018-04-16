@@ -37,7 +37,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       return Promise.resolve();
     }
 
-    await this.openPublication(`${location.origin}/asserts/publications/wasteland-otf-obf/`);
+    await this.openPublication(`${location.origin}/assets/publications/metamorphosis/`);
   }
 
   public updateRoot(root: HTMLElement | null): void {
@@ -50,7 +50,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     }
     this.publication = await Publication.fromURL(webpubUrl);
     this.rendition = new Rendition(this.publication, this.root);
-    this.rendition.setVeiwAsVertical(this.props.viewAsVertical);
+    this.rendition.setViewAsVertical(this.props.viewAsVertical);
 
     const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
                                                      this.props.viewportWidth;
