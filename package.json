@@ -13,9 +13,12 @@
     "start": "webpack-dev-server --open"
   },
   "dependencies": {
+    "es6-shim": "^0.35.3",
+    "promise-polyfill": "^7.1.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "readium-ng": "latest"
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "@types/react": "^16.0.36",
