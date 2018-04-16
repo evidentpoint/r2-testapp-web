@@ -10,7 +10,7 @@
     "watch": "npm run build -- --watch",
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "serve": "static -a 0.0.0.0 -H '{\"Cache-Control\": \"no-cache, must-revalidate\"}' public",
-    "start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --host 0.0.0.0 --open"
   },
   "dependencies": {
     "es6-shim": "^0.35.3",
