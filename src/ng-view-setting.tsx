@@ -18,9 +18,6 @@ export interface IReadiumNGViewerSettingStates {
 
 export class ReadiumNGViewSetting extends
   React.Component<IReadiumNGViewSettingProps, IReadiumNGViewerSettingStates> {
-  private style : any = {
-    margin: '5px',
-  };
 
   constructor(props: IReadiumNGViewSettingProps) {
     super(props);
@@ -34,19 +31,21 @@ export class ReadiumNGViewSetting extends
 
   public render(): ReactNode {
     return (
-      <div style={ { width: 'fit-content' } }>
-        <div style={ { margin: '5 10px', display: 'inline-block' } }>
+      <div style={ { width: 'auto', margin: '2px', 'box-shadow': '0 7px 6px -3px #dedede' } } className="settings-container">
+        <div style={ { display: 'inline-block' } } className="text-field-container">
         <TextField type="text" name="pageWidth" floatingLabelText="Page Width" value={ this.state.pageWidth }
-                 onChange={ this.handleChange } />
-        <RaisedButton style={ this.style } onClick={ this.savePageWidth }>Update</RaisedButton>
+                 onChange={ this.handleChange } className="setting-text-field" />
+        <RaisedButton onClick={ this.savePageWidth } className="settings-button">Update</RaisedButton>
         </div>
-        <div style={ { margin: '5 10px', display: 'inline-block' } }>
+        <div style={ { display: 'inline-block' } } className="text-field-container">
         <TextField type="text" name="fontSize" floatingLabelText="Font Size" value={ this.state.fontSize }
-                 onChange={ this.handleChange } />
-        <RaisedButton style={ this.style } onClick={ this.saveViewSetting }>Update</RaisedButton>
+                 onChange={ this.handleChange } className="setting-text-field" />
+        <RaisedButton onClick={ this.saveViewSetting } className="settings-button">Update</RaisedButton>
         </div>
-        <RaisedButton style={ this.style } onClick={ this.toggleScrolling }>Toggle Scrolling</RaisedButton>
-        <RaisedButton style={ this.style } onClick={ this.toggleViewAsVertical }>Toggle View as Vertical</RaisedButton>
+        <RaisedButton style={ { float: 'right', display: 'inline-block' } }
+                      onClick={ this.toggleScrolling } className="settings-button">Toggle Scrolling</RaisedButton>
+        <RaisedButton style={ { float: 'right', display: 'inline-block' } }
+                      onClick={ this.toggleViewAsVertical } className="settings-button">Toggle View as Vertical</RaisedButton>
       </div>
     );
   }
@@ -92,8 +91,8 @@ export class ReadiumNGViewSetting extends
     }
 
     const scrollVal = this.state.enableScroll;
+    this.props.rendition.viewport.enableScroll(!scrollVal);
     this.setState({ enableScroll: !scrollVal });
-    this.props.rendition.viewport.enableScroll(this.state.enableScroll);
 
     this.props.rendition.viewport.renderAtOffset(0);
   }
@@ -104,12 +103,10 @@ export class ReadiumNGViewSetting extends
     }
 
     const currentVal = this.state.viewAsVertical;
-    console.log(currentVal);
+    this.props.rendition.setViewAsVertical(!currentVal);
     this.setState({ viewAsVertical: !currentVal });
-    console.log(this.state.viewAsVertical);
-    this.props.rendition.setViewAsVertical(this.state.viewAsVertical);
-    console.log(this.state.viewAsVertical);
 
+    this.props.rendition.render();
     this.props.rendition.viewport.renderAtOffset(0);
   }
 }

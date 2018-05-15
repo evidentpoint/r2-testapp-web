@@ -27,14 +27,14 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
   public render(): ReactNode {
     return (
       <MuiThemeProvider>
-        <div>
+        <div className="main-container">
+          <ReadiumNGViewSetting
+            rendition={ this.state.rendition }/>
           <ReadiumNGView
             viewportWidth={ 600 } viewportHeight={ 800 } pageWidth={ 400 } pageHeight={ 800 }
             enableScroll={ true } viewAsVertical={ false }
             onRenditionCreated={ this.renditionUpdated }/>
           <ReadiumNGNavControl navigator={ this.state.navigator }/>
-          <ReadiumNGViewSetting
-            rendition={ this.state.rendition }/>
         </div>
       </MuiThemeProvider>
     );
