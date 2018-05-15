@@ -19,8 +19,10 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
   public render(): ReactNode {
     return (
       <div style={ { width: '600px', margin: 'auto' } } className="navigation-container">
-        <RaisedButton className="navigation-button" style={ { margin: '5px' } } onClick={ this.prevScreen }>Prev</RaisedButton>
-        <RaisedButton className="navigation-button" style={ { margin: '5px', float: 'right' } } onClick={ this.nextScreen }>Next</RaisedButton>
+        <RaisedButton className="navigation-button previous-button" style={ { margin: '5px' } }
+                      onClick={ this.prevScreen }>Prev</RaisedButton>
+        <RaisedButton className="navigation-button next-button" style={ { margin: '5px', float: 'right' } }
+                      onClick={ this.nextScreen }>Next</RaisedButton>
       </div>
     );
   }

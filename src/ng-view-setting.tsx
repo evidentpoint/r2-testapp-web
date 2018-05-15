@@ -43,9 +43,9 @@ export class ReadiumNGViewSetting extends
         <RaisedButton onClick={ this.saveViewSetting } className="settings-button">Update</RaisedButton>
         </div>
         <RaisedButton style={ { float: 'right', display: 'inline-block' } }
-                      onClick={ this.toggleScrolling } className="settings-button">Toggle Scrolling</RaisedButton>
+                      onClick={ this.toggleScrolling } className="settings-button scrolling-button">Toggle Scrolling</RaisedButton>
         <RaisedButton style={ { float: 'right', display: 'inline-block' } }
-                      onClick={ this.toggleViewAsVertical } className="settings-button">Toggle View as Vertical</RaisedButton>
+                      onClick={ this.toggleViewAsVertical } className="settings-button view-as-vertical-button">Toggle View as Vertical</RaisedButton>
       </div>
     );
   }
