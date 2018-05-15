@@ -7,6 +7,7 @@ import { Rendition } from 'readium-ng';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;
+  onViewParamsChanged(scroll: boolean, vertical: boolean): void;
 }
 
 export interface IReadiumNGViewerSettingStates {
@@ -21,7 +22,7 @@ export class ReadiumNGViewSetting extends
 
   constructor(props: IReadiumNGViewSettingProps) {
     super(props);
-    this.state = { pageWidth: 400, fontSize: 100, enableScroll: true, viewAsVertical: false };
+    this.state = { pageWidth: 400, fontSize: 100, enableScroll: false, viewAsVertical: false };
     this.saveViewSetting = this.saveViewSetting.bind(this);
     this.savePageWidth = this.savePageWidth.bind(this);
     this.toggleScrolling = this.toggleScrolling.bind(this);
@@ -43,9 +44,9 @@ export class ReadiumNGViewSetting extends
         <RaisedButton onClick={ this.saveViewSetting } className="settings-button">Update</RaisedButton>
         </div>
         <RaisedButton style={ { float: 'right', display: 'inline-block' } }
-                      onClick={ this.toggleScrolling } className="settings-button scrolling-button">Toggle Scrolling</RaisedButton>
+                      onClick={ this.toggleScrolling } className="settings-button scrolling-button">Scrolling: {this.state.enableScroll ? 'ON' : 'OFF'}</RaisedButton>
         <RaisedButton style={ { float: 'right', display: 'inline-block' } }
-                      onClick={ this.toggleViewAsVertical } className="settings-button view-as-vertical-button">Toggle View as Vertical</RaisedButton>
+                      onClick={ this.toggleViewAsVertical } className="settings-button view-as-vertical-button">Vertical: {this.state.viewAsVertical ? 'ON' : 'OFF'}</RaisedButton>
       </div>
     );
   }
@@ -91,10 +92,9 @@ export class ReadiumNGViewSetting extends
     }
 
     const scrollVal = this.state.enableScroll;
-    this.props.rendition.viewport.enableScroll(!scrollVal);
-    this.setState({ enableScroll: !scrollVal });
+    this.props.onViewParamsChanged(!scrollVal, this.state.viewAsVertical);
 
-    this.props.rendition.viewport.renderAtOffset(0);
+    this.setState({ enableScroll: !scrollVal });
   }
 
   private toggleViewAsVertical(): void {
@@ -103,10 +103,8 @@ export class ReadiumNGViewSetting extends
     }
 
     const currentVal = this.state.viewAsVertical;
-    this.props.rendition.setViewAsVertical(!currentVal);
-    this.setState({ viewAsVertical: !currentVal });
+    this.props.onViewParamsChanged(this.state.enableScroll, !currentVal);
 
-    this.props.rendition.render();
-    this.props.rendition.viewport.renderAtOffset(0);
+    this.setState({ viewAsVertical: !currentVal });
   }
 }

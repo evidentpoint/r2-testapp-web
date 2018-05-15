@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react';
 
 import { Publication, Rendition } from 'readium-ng';
 
+import debounce from 'lodash.debounce';
+
 export interface IReadiumNGViewProps {
   viewportWidth: number;
   viewportHeight: number;
@@ -15,6 +17,9 @@ export interface IReadiumNGViewProps {
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
   private root: HTMLElement | null = null;
+
+  private isVertical: boolean = false;
+  private isScrolling: boolean = false;
 
   private rendition?: Rendition;
 
@@ -40,6 +45,26 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     await this.openPublication(`${location.origin}/assets/publications/metamorphosis/`);
   }
 
+  public async componentDidUpdate(): Promise<void> {
+    if (!this.root) {
+      return Promise.resolve();
+    }
+
+    debounce(async () => {
+      const enableScroll = this.props.enableScroll;
+      const viewAsVertical = this.props.viewAsVertical;
+
+      console.log('scroll', enableScroll, 'vertical', viewAsVertical);
+
+      if (this.isScrolling !== enableScroll || this.isVertical !== viewAsVertical) {
+        await this.openPublication(`${location.origin}/assets/publications/metamorphosis/`);
+      }
+
+      this.isScrolling = enableScroll;
+      this.isVertical = viewAsVertical;
+    }, 400)();
+  }
+
   public updateRoot(root: HTMLElement | null): void {
     this.root = root;
   }
@@ -48,8 +73,17 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     if (!this.root) {
       return Promise.resolve();
     }
+    const newRoot = document.createElement('div');
+    newRoot.style.width = String(this.props.viewportWidth);
+    newRoot.style.height = String(this.props.viewportHeight);
+
+    if (this.root.firstChild) {
+      this.root.removeChild(this.root.firstChild);
+    }
+
+    this.root.appendChild(newRoot);
     this.publication = await Publication.fromURL(webpubUrl);
-    this.rendition = new Rendition(this.publication, this.root);
+    this.rendition = new Rendition(this.publication, newRoot);
     this.rendition.setViewAsVertical(this.props.viewAsVertical);
 
     const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
