@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import { ReadiumNGNavControl } from './ng-nav-control';
 import { ReadiumNGView } from './ng-view';
@@ -25,15 +26,17 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
 
   public render(): ReactNode {
     return (
-      <div>
-        <ReadiumNGView
-          viewportWidth={ 600 } viewportHeight={ 800 } pageWidth={ 400 } pageHeight={ 800 }
-          enableScroll={ true } viewAsVertical={ false }
-          onRenditionCreated={ this.renditionUpdated }/>
-        <ReadiumNGNavControl navigator={ this.state.navigator }/>
-        <ReadiumNGViewSetting
-          rendition={ this.state.rendition }/>
-      </div>
+      <MuiThemeProvider>
+        <div>
+          <ReadiumNGView
+            viewportWidth={ 600 } viewportHeight={ 800 } pageWidth={ 400 } pageHeight={ 800 }
+            enableScroll={ true } viewAsVertical={ false }
+            onRenditionCreated={ this.renditionUpdated }/>
+          <ReadiumNGNavControl navigator={ this.state.navigator }/>
+          <ReadiumNGViewSetting
+            rendition={ this.state.rendition }/>
+        </div>
+      </MuiThemeProvider>
     );
   }
 

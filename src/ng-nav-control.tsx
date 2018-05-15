@@ -1,3 +1,5 @@
+import RaisedButton from 'material-ui/RaisedButton';
+
 import React, { ReactNode } from 'react';
 
 import { Navigator } from 'readium-ng';
@@ -7,7 +9,6 @@ export interface IReadiumNGNavControlProps {
 }
 
 export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlProps, {}> {
-
   constructor(props: IReadiumNGNavControlProps) {
     super(props);
     this.state = { ngViewport: null };
@@ -18,8 +19,8 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
   public render(): ReactNode {
     return (
       <div>
-        <button onClick={ this.prevScreen }>Prev</button>
-        <button onClick={ this.nextScreen }>Next</button>
+        <RaisedButton style={ { margin: '5px' } } onClick={ this.prevScreen }>Prev</RaisedButton>
+        <RaisedButton style={ { 'margin-left': '420px' } } onClick={ this.nextScreen }>Next</RaisedButton>
       </div>
     );
   }
