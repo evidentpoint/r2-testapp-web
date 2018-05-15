@@ -32,8 +32,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
   public render(): ReactNode {
     return (
-      <div style={ { width: this.props.viewportWidth, height: this.props.viewportHeight, margin: 'auto'} }
-        ref={ this.updateRoot } className="reader-container"></div>
+      <div ref={ this.updateRoot } className="reader-container"></div>
     );
   }
 

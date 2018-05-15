@@ -32,16 +32,16 @@ export class ReadiumNGViewSetting extends
 
   public render(): ReactNode {
     return (
-      <div style={ { width: 'auto', margin: '2px', 'box-shadow': '0 7px 6px -3px #dedede' } } className="settings-container">
+      <div style={ { width: 'auto', margin: '2px', boxShadow: '0 7px 6px -3px #dedede' } } className="settings-container">
         <div style={ { display: 'inline-block' } } className="text-field-container">
         <TextField type="text" name="pageWidth" floatingLabelText="Page Width" value={ this.state.pageWidth }
                  onChange={ this.handleChange } className="setting-text-field" />
-        <RaisedButton onClick={ this.savePageWidth } className="settings-button">Update</RaisedButton>
+        <RaisedButton onClick={ this.savePageWidth } className="settings-button">Apply</RaisedButton>
         </div>
         <div style={ { display: 'inline-block' } } className="text-field-container">
         <TextField type="text" name="fontSize" floatingLabelText="Font Size" value={ this.state.fontSize }
                  onChange={ this.handleChange } className="setting-text-field" />
-        <RaisedButton onClick={ this.saveViewSetting } className="settings-button">Update</RaisedButton>
+        <RaisedButton onClick={ this.saveViewSetting } className="settings-button">Apply</RaisedButton>
         </div>
         <RaisedButton style={ { float: 'right', display: 'inline-block' } }
                       onClick={ this.toggleScrolling } className="settings-button scrolling-button">Scrolling: {this.state.enableScroll ? 'ON' : 'OFF'}</RaisedButton>
