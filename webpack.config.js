@@ -2,6 +2,7 @@ const path = require("path");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
+  mode: "development",
   context: __dirname,
   devtool: "source-map",
   devServer: {
