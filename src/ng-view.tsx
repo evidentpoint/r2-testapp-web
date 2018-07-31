@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Publication, Rendition } from 'readium-ng';
+import { Publication, Rendition, SpreadMode } from 'readium-ng';
 
 export interface IReadiumNGViewProps {
   viewportWidth: number;
@@ -54,10 +54,16 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
     const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
                                                      this.props.viewportWidth;
-    this.rendition.viewport.setViewportSize(viewportSize);
-    this.rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
+    const viewportSize2nd = this.props.viewAsVertical ? this.props.viewportWidth :
+                                                        this.props.viewportHeight;
 
-    this.rendition.setPageSize(this.props.pageWidth, this.props.pageHeight);
+    this.rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
+    this.rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
+    await this.rendition.setPageLayout({
+      spreadMode: SpreadMode.Freeform,
+      pageWidth: this.props.pageWidth,
+      pageHeight: this.props.pageHeight,
+    });
 
     this.props.onRenditionCreated(this.rendition);
 

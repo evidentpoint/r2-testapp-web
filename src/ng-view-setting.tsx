@@ -1,14 +1,16 @@
 import React, { ReactNode } from 'react';
 
-import { Rendition } from 'readium-ng';
+import { Navigator, Rendition, SpreadMode } from 'readium-ng';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;
+  navigator: Navigator | null;
 }
 
 export interface IReadiumNGViewerSettingStates {
   pageWidth: number;
   fontSize: number;
+  spreadMode: string;
 }
 
 export class ReadiumNGViewSetting extends
@@ -16,10 +18,12 @@ export class ReadiumNGViewSetting extends
 
   constructor(props: IReadiumNGViewSettingProps) {
     super(props);
-    this.state = { pageWidth: 400, fontSize: 100 };
+    this.state = { pageWidth: 400, fontSize: 100, spreadMode: 'freeform' };
     this.saveViewSetting = this.saveViewSetting.bind(this);
     this.savePageWidth = this.savePageWidth.bind(this);
+    this.saveSpreadMode = this.saveSpreadMode.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSpreadModeChange = this.handleSpreadModeChange.bind(this);
   }
 
   public render(): ReactNode {
@@ -37,6 +41,16 @@ export class ReadiumNGViewSetting extends
                  onChange={ this.handleChange } />
         </label>
         <button onClick={ this.saveViewSetting }>Update</button>
+        <label>
+          Spread Mode:
+          <select value={ this.state.spreadMode } onChange={ this.handleSpreadModeChange }>
+            <option value="freeform" aria-selected="true">Freeform</option>
+            <option value="auto" aria-selected="false">Auto</option>
+            <option value="single" aria-selected="false">Single</option>
+            <option value="double" aria-selected="false">Double</option>
+          </select>
+        </label>
+        <button onClick={ this.saveSpreadMode }>Update</button>
       </div>
     );
   }
@@ -56,6 +70,10 @@ export class ReadiumNGViewSetting extends
     }
   }
 
+  private handleSpreadModeChange(event: React.FormEvent<HTMLSelectElement>): void {
+    this.setState({ spreadMode: event.currentTarget.value });
+  }
+
   private async saveViewSetting(): Promise<void> {
     if (!this.props.rendition) {
       return;
@@ -71,9 +89,41 @@ export class ReadiumNGViewSetting extends
       return;
     }
 
-    this.props.rendition.setPageSize(this.state.pageWidth, 800);
+    this.props.rendition.setPageLayout({
+      spreadMode: SpreadMode.Freeform,
+      pageWidth: this.state.pageWidth,
+      pageHeight: 800,
+    });
 
     this.props.rendition.viewport.renderAtOffset(0);
+  }
+
+  private async saveSpreadMode(): Promise<void> {
+    if (!this.props.rendition || !this.props.navigator) {
+      return;
+    }
+
+    const newVal = this.state.spreadMode;
+    let spreadMode = SpreadMode.Freeform;
+    if (newVal === 'auto') {
+      spreadMode = SpreadMode.FitViewportAuto;
+    } else if (newVal === 'single') {
+      spreadMode = SpreadMode.FitViewportSingleSpread;
+    } else if (newVal === 'double') {
+      spreadMode = SpreadMode.FitViewportDoubleSpread;
+    }
+
+    const loc = await this.props.navigator.getCurrentLocationAsync();
+
+    await this.props.rendition.setPageLayout({
+      spreadMode,
+      pageWidth: this.state.pageWidth,
+      pageHeight: 800,
+    });
+
+    if (loc) {
+      await this.props.navigator.gotoLocation(loc);
+    }
   }
 
 }

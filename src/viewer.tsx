@@ -32,7 +32,8 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
           onRenditionCreated={ this.renditionUpdated }/>
         <ReadiumNGNavControl navigator={ this.state.navigator }/>
         <ReadiumNGViewSetting
-          rendition={ this.state.rendition }/>
+          rendition={ this.state.rendition }
+          navigator={ this.state.navigator}/>
       </div>
     );
   }
