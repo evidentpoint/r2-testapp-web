@@ -26,8 +26,14 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
   }
 
   public render(): ReactNode {
+    const readiumViewStyle = {
+      margin: 'auto',
+      width: this.props.viewportWidth,
+      height: this.props.viewportHeight,
+    };
+
     return (
-      <div style={ { width: this.props.viewportWidth, height: this.props.viewportHeight } }
+      <div style={ readiumViewStyle }
         ref={ this.updateRoot }></div>
     );
   }
@@ -38,6 +44,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     }
 
     await this.openPublication(`${location.origin}/assets/publications/metamorphosis/`);
+    // await this.openPublication(`${location.origin}/assets/publications/igp-twss-fxl/`);
   }
 
   public updateRoot(root: HTMLElement | null): void {
@@ -60,7 +67,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
     this.rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
     await this.rendition.setPageLayout({
-      spreadMode: SpreadMode.Freeform,
+      spreadMode: SpreadMode.FitViewportAuto,
       pageWidth: this.props.pageWidth,
       pageHeight: this.props.pageHeight,
     });
@@ -70,7 +77,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.rendition.render();
     this.rendition.viewport.enableScroll(this.props.enableScroll);
 
-    this.rendition.viewport.renderAtOffset(0);
+    await this.rendition.viewport.renderAtOffset(0);
     // await this.viewport.renderAtSpineItem(4);
   }
 }

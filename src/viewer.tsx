@@ -27,8 +27,8 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
     return (
       <div>
         <ReadiumNGView
-          viewportWidth={ 600 } viewportHeight={ 800 } pageWidth={ 400 } pageHeight={ 800 }
-          enableScroll={ true } viewAsVertical={ false }
+          viewportWidth={ 800 } viewportHeight={ 900 } pageWidth={ 400 } pageHeight={ 900 }
+          enableScroll={ false } viewAsVertical={ false }
           onRenditionCreated={ this.renditionUpdated }/>
         <ReadiumNGNavControl navigator={ this.state.navigator }/>
         <ReadiumNGViewSetting
