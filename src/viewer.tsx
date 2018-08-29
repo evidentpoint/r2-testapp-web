@@ -4,7 +4,7 @@ import { ReadiumNGNavControl } from './ng-nav-control';
 import { ReadiumNGView } from './ng-view';
 import { ReadiumNGViewSetting } from './ng-view-setting';
 
-import { Navigator, Rendition } from 'readium-ng';
+import { Navigator, Rendition } from 'r2-navigator-web';
 
 export interface IReadiumNGViewerStates {
   rendition: Rendition | null;

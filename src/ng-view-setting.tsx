@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Navigator, Rendition, SpreadMode } from 'readium-ng';
+import { Navigator, Rendition, SpreadMode } from 'r2-navigator-web';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Publication, R1ContentViewFactory, Rendition, SpreadMode } from 'readium-ng';
+import { Publication, R1ContentViewFactory, Rendition, SpreadMode } from 'r2-navigator-web';
 
 export interface IReadiumNGViewProps {
   viewportWidth: number;

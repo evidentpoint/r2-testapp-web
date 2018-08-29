@@ -1,7 +1,7 @@
 {
-  "name": "readium-ng-viewer",
+  "name": "r2-testapp-web",
   "version": "0.0.1",
-  "description": "A viewer based on readium-ng",
+  "description": "A Readium reader testing app for the web",
   "main": "index.js",
   "author": "Lili Deng",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "promise-polyfill": "^8.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "readium-ng": "^0.0.2",
+    "r2-navigator-web": "^0.0.2",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {

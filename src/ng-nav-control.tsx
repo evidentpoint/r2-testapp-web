@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Navigator } from 'readium-ng';
+import { Navigator } from 'r2-navigator-web';
 
 export interface IReadiumNGNavControlProps {
   navigator: Navigator | null;
