@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Publication, Rendition, SpreadMode } from 'readium-ng';
+import { Publication, R1ContentViewFactory, Rendition, SpreadMode } from 'readium-ng';
 
 export interface IReadiumNGViewProps {
   viewportWidth: number;
@@ -56,7 +56,8 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       return Promise.resolve();
     }
     this.publication = await Publication.fromURL(webpubUrl);
-    this.rendition = new Rendition(this.publication, this.root);
+    this.rendition = new Rendition(this.publication, this.root,
+                                   new R1ContentViewFactory(this.publication));
     this.rendition.setViewAsVertical(this.props.viewAsVertical);
 
     const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
