@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Navigator, Rendition, SpreadMode } from 'r2-navigator-web';
+import { Navigator, Rendition, SpreadMode } from '@evidentpoint/r2-navigator-web';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;
