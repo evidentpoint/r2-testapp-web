@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Navigator, Rendition, SpreadMode } from '@evidentpoint/r2-navigator-web';
+import { Navigator, Rendition, SettingName, SpreadMode } from '@evidentpoint/r2-navigator-web';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;
@@ -79,7 +79,8 @@ export class ReadiumNGViewSetting extends
       return;
     }
 
-    await this.props.rendition.updateViewSettings({ fontSize: this.state.fontSize });
+    const fontSizeSetting = { name: SettingName.FontSize, value: this.state.fontSize };
+    await this.props.rendition.updateViewSettings([fontSizeSetting]);
 
     this.props.rendition.viewport.renderAtOffset(0);
   }
