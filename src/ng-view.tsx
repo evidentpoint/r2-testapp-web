@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react';
 
-import { Publication,
-         R1ContentViewFactory,
+import { IFrameLoader,
+         Publication,
+         R1ContentViewFactory as ContentViewFactory,
          Rendition,
          SpreadMode } from '@evidentpoint/r2-navigator-web';
 
@@ -59,8 +60,14 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       return Promise.resolve();
     }
     this.publication = await Publication.fromURL(webpubUrl);
+
+    // const loader = new IFrameLoader(this.publication.getBaseURI());
+    // loader.setReadiumCssBasePath('/assets/readium-css');
+
+    // const cvf = new ContentViewFactory(loader);
+    const cvf = new ContentViewFactory(this.publication);
     this.rendition = new Rendition(this.publication, this.root,
-                                   new R1ContentViewFactory(this.publication));
+                                   cvf);
     this.rendition.setViewAsVertical(this.props.viewAsVertical);
 
     const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
@@ -82,6 +89,6 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.rendition.viewport.enableScroll(this.props.enableScroll);
 
     await this.rendition.viewport.renderAtOffset(0);
-    // await this.viewport.renderAtSpineItem(4);
+    // await this.rendition.viewport.renderAtSpineItem(4);
   }
 }
