@@ -1,6 +1,12 @@
 import React, { ReactNode } from 'react';
 
-import { Navigator, Rendition, SettingName, SpreadMode } from '@evidentpoint/r2-navigator-web';
+import {
+  Navigator,
+  Rendition,
+  SettingName,
+  SpreadMode,
+  stringToSettingName,
+} from '@evidentpoint/r2-navigator-web';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;
@@ -9,8 +15,8 @@ export interface IReadiumNGViewSettingProps {
 
 export interface IReadiumNGViewerSettingStates {
   pageWidth: number;
-  fontSize: number;
-  spreadMode: string;
+  viewSetting: SettingName;
+  viewSettingValue: string;
 }
 
 export class ReadiumNGViewSetting extends
@@ -18,12 +24,11 @@ export class ReadiumNGViewSetting extends
 
   constructor(props: IReadiumNGViewSettingProps) {
     super(props);
-    this.state = { pageWidth: 400, fontSize: 100, spreadMode: 'freeform' };
+    this.state = { pageWidth: 400, viewSetting: SettingName.FontSize, viewSettingValue: '100' };
     this.saveViewSetting = this.saveViewSetting.bind(this);
     this.savePageWidth = this.savePageWidth.bind(this);
-    this.saveSpreadMode = this.saveSpreadMode.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSpreadModeChange = this.handleSpreadModeChange.bind(this);
+    this.handleViewSettingOptionChange = this.handleViewSettingOptionChange.bind(this);
   }
 
   public render(): ReactNode {
@@ -36,42 +41,60 @@ export class ReadiumNGViewSetting extends
         </label>
         <button onClick={ this.savePageWidth }>Update</button>
         <label>
-          Font Size:
-          <input type="text" name="fontSize" value={ this.state.fontSize }
+          View Settings:
+          <select value={ this.state.viewSetting } onChange={ this.handleViewSettingOptionChange }>
+            <option value={ SettingName.BackgroundColor } aria-selected="false">
+              { SettingName.BackgroundColor }
+            </option>
+            <option value={ SettingName.ColumnGap } aria-selected="false">
+              { SettingName.ColumnGap }
+            </option>
+            <option value={ SettingName.FontFamily } aria-selected="false">
+              { SettingName.FontFamily }
+            </option>
+            <option value={ SettingName.FontSize } aria-selected="true">
+              { SettingName.FontSize }
+            </option>
+            <option value={ SettingName.ReadingMode } aria-selected="false">
+              { SettingName.ReadingMode }
+            </option>
+            <option value={ SettingName.SpreadMode } aria-selected="false">
+              { SettingName.SpreadMode }
+            </option>
+            <option value={ SettingName.TextColor } aria-selected="false">
+              { SettingName.TextColor }
+            </option>
+          </select>
+          <input type="text" name="settingValue" value={ this.state.viewSettingValue }
                  onChange={ this.handleChange } />
         </label>
         <button onClick={ this.saveViewSetting }>Update</button>
-        <label>
-          Spread Mode:
-          <select value={ this.state.spreadMode } onChange={ this.handleSpreadModeChange }>
-            <option value="freeform" aria-selected="true">Freeform</option>
-            <option value="auto" aria-selected="false">Auto</option>
-            <option value="single" aria-selected="false">Single</option>
-            <option value="double" aria-selected="false">Double</option>
-          </select>
-        </label>
-        <button onClick={ this.saveSpreadMode }>Update</button>
       </div>
     );
   }
 
-  // tslint:disable-next-line:no-any
   private handleChange(event: React.FormEvent<HTMLInputElement>): void {
-    const newVal = parseInt(event.currentTarget.value, 10);
-    if (isNaN(newVal)) {
-      return;
-    }
-
     const elementName = event.currentTarget.name;
     if (elementName === 'pageWidth') {
+      const newVal = parseInt(event.currentTarget.value, 10);
+      if (isNaN(newVal)) {
+        return;
+      }
       this.setState({ pageWidth: newVal });
-    } else if (elementName === 'fontSize') {
-      this.setState({ fontSize: newVal });
+    } else if (elementName === 'settingValue') {
+      this.setState({ viewSettingValue: event.currentTarget.value });
     }
   }
 
-  private handleSpreadModeChange(event: React.FormEvent<HTMLSelectElement>): void {
-    this.setState({ spreadMode: event.currentTarget.value });
+  private handleViewSettingOptionChange(event: React.FormEvent<HTMLSelectElement>): void {
+    const setting = stringToSettingName(event.currentTarget.value);
+    if (!setting) {
+      console.error(`Unknown setting: ${event.currentTarget.value}`);
+
+      return;
+    }
+
+    this.setState({ viewSetting:  setting });
   }
 
   private async saveViewSetting(): Promise<void> {
@@ -79,8 +102,13 @@ export class ReadiumNGViewSetting extends
       return;
     }
 
-    const fontSizeSetting = { name: SettingName.FontSize, value: this.state.fontSize };
-    await this.props.rendition.updateViewSettings([fontSizeSetting]);
+    let settingValue: number | string = this.state.viewSettingValue;
+    if (this.state.viewSetting === SettingName.ColumnGap) {
+      settingValue = parseFloat(settingValue);
+    }
+
+    const newSetting = { name: this.state.viewSetting, value: settingValue };
+    this.props.rendition.updateViewSettings([newSetting]);
 
     this.props.rendition.viewport.renderAtOffset(0);
   }
@@ -97,34 +125,6 @@ export class ReadiumNGViewSetting extends
     });
 
     this.props.rendition.viewport.renderAtOffset(0);
-  }
-
-  private async saveSpreadMode(): Promise<void> {
-    if (!this.props.rendition || !this.props.navigator) {
-      return;
-    }
-
-    const newVal = this.state.spreadMode;
-    let spreadMode = SpreadMode.Freeform;
-    if (newVal === 'auto') {
-      spreadMode = SpreadMode.FitViewportAuto;
-    } else if (newVal === 'single') {
-      spreadMode = SpreadMode.FitViewportSingleSpread;
-    } else if (newVal === 'double') {
-      spreadMode = SpreadMode.FitViewportDoubleSpread;
-    }
-
-    const loc = await this.props.navigator.getCurrentLocationAsync();
-
-    await this.props.rendition.setPageLayout({
-      spreadMode,
-      pageWidth: this.state.pageWidth,
-      pageHeight: 800,
-    });
-
-    if (loc) {
-      await this.props.navigator.gotoLocation(loc);
-    }
   }
 
 }
