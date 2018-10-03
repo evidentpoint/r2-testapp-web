@@ -98,9 +98,11 @@ export class ReadiumNGViewSetting extends
   }
 
   private async saveViewSetting(): Promise<void> {
-    if (!this.props.rendition) {
+    if (!this.props.rendition || !this.props.navigator) {
       return;
     }
+
+    const loc = await this.props.navigator.getCurrentLocationAsync();
 
     let settingValue: number | string = this.state.viewSettingValue;
     if (this.state.viewSetting === SettingName.ColumnGap) {
@@ -110,7 +112,9 @@ export class ReadiumNGViewSetting extends
     const newSetting = { name: this.state.viewSetting, value: settingValue };
     this.props.rendition.updateViewSettings([newSetting]);
 
-    this.props.rendition.viewport.renderAtOffset(0);
+    if (loc) {
+      await this.props.navigator.gotoLocation(loc);
+    }
   }
 
   private savePageWidth(): void {
