@@ -34,6 +34,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       margin: 'auto',
       width: this.props.viewportWidth,
       height: this.props.viewportHeight,
+      border: '1px dashed black',
     };
 
     return (
