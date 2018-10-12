@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 import { IFrameLoader,
          Publication,
-         R1ContentViewFactory as ContentViewFactory,
+         R2ContentViewFactory as ContentViewFactory,
          Rendition,
          SpreadMode } from '@evidentpoint/r2-navigator-web';
 
@@ -49,6 +49,8 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
     await this.openPublication(`${location.origin}/assets/publications/metamorphosis/`);
     // await this.openPublication(`${location.origin}/assets/publications/igp-twss-fxl/`);
+    // tslint:disable-next-line:max-line-length
+    // await this.openPublication(`${location.origin}/assets/publications/regime-anticancer-arabic/`);
   }
 
   public updateRoot(root: HTMLElement | null): void {
@@ -61,11 +63,11 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     }
     this.publication = await Publication.fromURL(webpubUrl);
 
-    // const loader = new IFrameLoader(this.publication.getBaseURI());
-    // loader.setReadiumCssBasePath('/assets/readium-css');
+    const loader = new IFrameLoader(this.publication.getBaseURI());
+    loader.setReadiumCssBasePath('/assets/readium-css');
 
-    // const cvf = new ContentViewFactory(loader);
-    const cvf = new ContentViewFactory(this.publication);
+    const cvf = new ContentViewFactory(loader);
+    // const cvf = new ContentViewFactory(this.publication);
     this.rendition = new Rendition(this.publication, this.root,
                                    cvf);
     this.rendition.setViewAsVertical(this.props.viewAsVertical);
