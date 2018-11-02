@@ -48,10 +48,17 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       return Promise.resolve();
     }
 
-    await this.openPublication(`${location.origin}/assets/publications/metamorphosis/`);
-    // await this.openPublication(`${location.origin}/assets/publications/igp-twss-fxl/`);
-    // tslint:disable-next-line:max-line-length
-    // await this.openPublication(`${location.origin}/assets/publications/regime-anticancer-arabic/`);
+    // Reflow LTR:
+    await this.openPublication(
+        `${location.origin}/assets/publications/metamorphosis/manifest.json`);
+
+    // // FXL:
+    // await this.openPublication(
+    //     `${location.origin}/assets/publications/igp-twss-fxl/manifest.json`);
+
+    // // Reflow RTL:
+    // await this.openPublication(
+    //     `${location.origin}/assets/publications/regime-anticancer-arabic/manifest.json`);
   }
 
   public updateRoot(root: HTMLElement | null): void {

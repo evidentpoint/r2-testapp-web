@@ -35,7 +35,7 @@
     ],
     "modified": "2018-10-10T21:27:43.802Z",
     "published": "2012-01-01T00:00:00.000Z",
-    "direction": "rtl",
+    "readingProgression": "rtl",
     "rights": "This work is shared with the public using the Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license."
   },
   "links": [
@@ -46,7 +46,7 @@
       "rel": "self"
     }
   ],
-  "spine": [
+  "readingOrder": [
     {
       "href": "EPUB/Content/A_cover.xhtml",
       "type": "application/xhtml+xml"
