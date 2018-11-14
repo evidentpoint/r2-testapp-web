@@ -15,7 +15,5 @@ deploy:
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
-  local-dir: public
-  verbose: true
   on:
     branch: master
