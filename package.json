@@ -13,7 +13,7 @@
     "start": "webpack-dev-server --host 0.0.0.0 --open"
   },
   "dependencies": {
-    "@evidentpoint/r2-navigator-web": "^0.0.3",
+    "@evidentpoint/r2-navigator-web": "^0.0.4",
     "es6-shim": "^0.35.4",
     "promise-polyfill": "^8.0.0",
     "react": "^16.6.0",
