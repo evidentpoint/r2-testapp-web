@@ -16,6 +16,8 @@ export interface IReadiumNGViewProps {
   onRenditionCreated(rend: Rendition): void;
 }
 
+const ASSETS_URL = new URL('./assets', window.location.href).toString();
+
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
   private root: HTMLElement | null = null;
@@ -50,15 +52,15 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
     // Reflow LTR:
     await this.openPublication(
-        `${location.origin}/assets/publications/metamorphosis/manifest.json`);
+        `${ASSETS_URL}/publications/metamorphosis/manifest.json`);
 
     // // FXL:
     // await this.openPublication(
-    //     `${location.origin}/assets/publications/igp-twss-fxl/manifest.json`);
+    //     `${ASSETS_URL}/publications/igp-twss-fxl/manifest.json`);
 
     // // Reflow RTL:
     // await this.openPublication(
-    //     `${location.origin}/assets/publications/regime-anticancer-arabic/manifest.json`);
+    //     `${ASSETS_URL}/publications/regime-anticancer-arabic/manifest.json`);
   }
 
   public updateRoot(root: HTMLElement | null): void {
@@ -72,7 +74,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.publication = await Publication.fromURL(webpubUrl);
 
     const loader = new IFrameLoader(this.publication.getBaseURI());
-    loader.setReadiumCssBasePath('/assets/readium-css');
+    loader.setReadiumCssBasePath(`${ASSETS_URL}/readium-css`);
 
     const cvf = new ContentViewFactory(loader);
     // const cvf = new ContentViewFactory(this.publication);

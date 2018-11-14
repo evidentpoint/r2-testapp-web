@@ -107089,6 +107089,7 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 };
 
 
+var ASSETS_URL = new URL('./assets', window.location.href).toString();
 var ReadiumNGView = /** @class */ (function (_super) {
     __extends(ReadiumNGView, _super);
     function ReadiumNGView(props) {
@@ -107115,7 +107116,7 @@ var ReadiumNGView = /** @class */ (function (_super) {
                             return [2 /*return*/, Promise.resolve()];
                         }
                         // Reflow LTR:
-                        return [4 /*yield*/, this.openPublication(location.origin + "/assets/publications/metamorphosis/manifest.json")];
+                        return [4 /*yield*/, this.openPublication(ASSETS_URL + "/publications/metamorphosis/manifest.json")];
                     case 1:
                         // Reflow LTR:
                         _a.sent();
@@ -107141,7 +107142,7 @@ var ReadiumNGView = /** @class */ (function (_super) {
                     case 1:
                         _a.publication = _b.sent();
                         loader = new _evidentpoint_r2_navigator_web__WEBPACK_IMPORTED_MODULE_1__["IFrameLoader"](this.publication.getBaseURI());
-                        loader.setReadiumCssBasePath('/assets/readium-css');
+                        loader.setReadiumCssBasePath(ASSETS_URL + "/readium-css");
                         cvf = new _evidentpoint_r2_navigator_web__WEBPACK_IMPORTED_MODULE_1__["R2ContentViewFactory"](loader);
                         // const cvf = new ContentViewFactory(this.publication);
                         this.rendition = new _evidentpoint_r2_navigator_web__WEBPACK_IMPORTED_MODULE_1__["Rendition"](this.publication, this.root, cvf);
