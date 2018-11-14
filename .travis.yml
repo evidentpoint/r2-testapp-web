@@ -10,6 +10,7 @@ install:
 - npm install
 script:
 - npm run test
+before_deploy: "git checkout -- .gitignore"
 deploy:
   provider: pages
   skip-cleanup: true
