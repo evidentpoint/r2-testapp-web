@@ -1,0 +1,113 @@
+{
+  "@context": "http://readium.org/webpub/default.jsonld",
+  "metadata": {
+    "@type": "http://schema.org/Book",
+    "title": {
+      "ar": "السرطان من  للوقاية الصحيح الغذائي  النظام"
+    },
+    "identifier": "code.google.com.epub-samples.regime-anticancer-arabic",
+    "author": [
+      {
+        "name": {
+          "ar": "دافيد  خيّاط لبروفيسورا"
+        }
+      },
+      {
+        "name": {
+          "ar": "اردو هاتر ناتالي"
+        }
+      }
+    ],
+    "translator": {
+      "name": {
+        "ar": "فيّاض خليل مارينا"
+      }
+    },
+    "contributor": {
+      "name": "Vincent Gros",
+      "role": "mrk"
+    },
+    "publisher": {
+      "name": "Hachette Antoine"
+    },
+    "language": [
+      "ar"
+    ],
+    "modified": "2018-10-10T21:27:43.802Z",
+    "published": "2012-01-01T00:00:00.000Z",
+    "readingProgression": "rtl",
+    "rights": "This work is shared with the public using the Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license."
+  },
+  "links": [
+    {
+      "href": "http://localhost:9876/fixtures/publications/regime-anticancer-arabic/manifest.json",
+      "type": "application/webpub+json",
+      "templated": false,
+      "rel": "self"
+    }
+  ],
+  "readingOrder": [
+    {
+      "href": "EPUB/Content/A_cover.xhtml",
+      "type": "application/xhtml+xml"
+    },
+    {
+      "href": "EPUB/Content/B_titlepage.xhtml",
+      "type": "application/xhtml+xml"
+    },
+    {
+      "href": "EPUB/Content/C_content.xhtml",
+      "type": "application/xhtml+xml"
+    }
+  ],
+  "resources": [
+    {
+      "href": "EPUB/Navigation/toc.ncx",
+      "type": "application/x-dtbncx+xml"
+    },
+    {
+      "href": "EPUB/Navigation/nav.xhtml",
+      "type": "application/xhtml+xml",
+      "rel": "contents"
+    },
+    {
+      "href": "EPUB/Style/style.css",
+      "type": "text/css"
+    },
+    {
+      "href": "EPUB/Image/cover.jpg",
+      "type": "image/jpeg",
+      "height": 1158,
+      "width": 800,
+      "rel": "cover"
+    },
+    {
+      "href": "EPUB/Image/titlepage.jpg",
+      "type": "image/jpeg"
+    }
+  ],
+  "toc": [
+    {
+      "href": "EPUB/Content/A_cover.xhtml",
+      "title": "Couverture"
+    },
+    {
+      "href": "EPUB/Content/B_titlepage.xhtml",
+      "title": "Page de titre"
+    },
+    {
+      "href": "EPUB/Content/C_content.xhtml",
+      "title": "Commencer la lecture"
+    }
+  ],
+  "landmarks": [
+    {
+      "href": "EPUB/Content/A_cover.xhtml",
+      "title": "Couverture"
+    },
+    {
+      "href": "EPUB/Content/C_content.xhtml",
+      "title": "Commencer la lecture"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ install:
 - npm install
 script:
 - npm run test
-before_deploy: "git checkout -- .gitignore"
+before_deploy: "mv public demo"
 deploy:
   provider: pages
   skip-cleanup: true
