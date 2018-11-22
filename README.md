@@ -18,8 +18,8 @@ Demo: https://evidentpoint.github.io/r2-testapp-web/demo/
 1. Clone repository
 2. Run `npm install`
 3. Run `npm run build` to compile the [TypeScript](https://www.typescriptlang.org/) source files in `src` to `public/bundle.js`
-4. Run a local webserver like [http-server](https://www.npmjs.com/package/http-server) to serve the files in `public`
-5. Access in a browser to see the test app
+4. Run `npm run serve` to to serve the files in `public`
+5. Access in a browser at `http://localhost:8080` to see the test app
 
 ### Development / Experimentation
 
