@@ -35,12 +35,12 @@ export class ReadiumNGViewSetting extends
   public render(): ReactNode {
     return (
       <div>
-        <label>
+        {/* <label>
           Page Width:
           <input type="text" name="pageWidth" value={ this.state.pageWidth }
                  onChange={ this.handleChange } />
         </label>
-        <button onClick={ this.savePageWidth }>Update</button>
+        <button onClick={ this.savePageWidth }>Update</button> */}
         <label>
           View Settings:
           <select value={ this.state.viewSetting } onChange={ this.handleViewSettingOptionChange }>
