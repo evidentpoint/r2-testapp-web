@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 
 import {
   Navigator,
@@ -9,6 +9,7 @@ import {
 } from '@readium/navigator-web';
 
 export interface IReadiumNGViewSettingProps {
+  style?: CSSProperties;
   rendition: Rendition | null;
   navigator: Navigator | null;
 }

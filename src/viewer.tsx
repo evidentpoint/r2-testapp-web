@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 
 import { ReadiumNGNavControl } from './ng-nav-control';
 import { ReadiumNGView } from './ng-view';
@@ -24,16 +24,30 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
   }
 
   public render(): ReactNode {
+    const viewerContainerStyle: CSSProperties = {
+      display: 'grid',
+      gridTemplateRows: '1fr max-content max-content',
+      gridTemplateAreas: `'BookContent'
+                          'NavControl'
+                          'ViewSetting'`,
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+    };
+
     return (
-      <div>
+      <div style={ viewerContainerStyle }>
         <ReadiumNGView
-          viewportWidth={ 800 } viewportHeight={ 900 } pageWidth={ 400 } pageHeight={ 900 }
+          pageWidth={ 400 } pageHeight={ 900 }
           enableScroll={ false } viewAsVertical={ false }
-          onRenditionCreated={ this.renditionUpdated }/>
-        <ReadiumNGNavControl navigator={ this.state.navigator }/>
+          onRenditionCreated={ this.renditionUpdated }
+          style={ { gridArea: 'BookContent' } }/>
+        <ReadiumNGNavControl navigator={ this.state.navigator }
+                             style={ { gridArea: 'NavControl' } }/>
         <ReadiumNGViewSetting
           rendition={ this.state.rendition }
-          navigator={ this.state.navigator}/>
+          navigator={ this.state.navigator}
+          style={ { gridArea: 'ViewSetting' } }/>
       </div>
     );
   }

@@ -1,15 +1,16 @@
-import React, { ReactNode } from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 
 import { IFrameLoader,
          Publication,
          R2ContentViewFactory as ContentViewFactory,
          Rendition,
+         RenditionContext,
          ScrollMode,
-         SpreadMode } from '@readium/navigator-web';
+         SpreadMode,
+         ViewportResizer } from '@readium/navigator-web';
 
 export interface IReadiumNGViewProps {
-  viewportWidth: number;
-  viewportHeight: number;
+  style?: CSSProperties;
   pageHeight: number;
   pageWidth: number;
   enableScroll: boolean;
@@ -22,34 +23,51 @@ const ASSETS_URL = new URL('./assets', window.location.href).toString();
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
   private root: HTMLElement | null = null;
+  private viewportRoot: HTMLElement | null = null;
 
-  private rendition?: Rendition;
+  private rendCtx?: RenditionContext;
+
+  private resizer?: ViewportResizer;
 
   private publication: Publication | undefined;
+
+  private viewportWidth: number = 0;
+  private viewportHeight: number = 0;
 
   constructor(props: IReadiumNGViewProps) {
     super(props);
     this.updateRoot = this.updateRoot.bind(this);
+    this.updateViewportRoot = this.updateViewportRoot.bind(this);
+    this.onViewportResize = this.onViewportResize.bind(this);
   }
 
   public render(): ReactNode {
-    const readiumViewStyle = {
-      margin: 'auto',
-      width: this.props.viewportWidth,
-      height: this.props.viewportHeight,
+    const containerStyle: CSSProperties = {
+      position: 'relative',
       border: '1px dashed black',
     };
 
+    Object.assign(containerStyle, this.props.style);
+
     return (
-      <div style={ readiumViewStyle }
-        ref={ this.updateRoot }></div>
+      <div style={ containerStyle }
+        ref={ this.updateRoot }>
+        <div id="viewport" ref={ this.updateViewportRoot }
+             style={{ position: 'absolute' }}/>
+      </div>
     );
+  }
+
+  public componentWillUnmount(): void {
+    this.cleanupResizer();
   }
 
   public async componentDidMount(): Promise<void> {
     if (!this.root) {
       return Promise.resolve();
     }
+
+    this.updateSize();
 
     // Reflow LTR:
     await this.openPublication(
@@ -69,8 +87,8 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
   }
 
   public async openPublication(webpubUrl: string): Promise<void> {
-    if (!this.root) {
-      return Promise.resolve();
+    if (!this.root || !this.viewportRoot) {
+      return;
     }
     this.publication = await Publication.fromURL(webpubUrl);
 
@@ -79,31 +97,69 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
     const cvf = new ContentViewFactory(loader);
     // const cvf = new ContentViewFactory(this.publication);
-    this.rendition = new Rendition(this.publication, this.root,
-                                   cvf);
-    this.rendition.setViewAsVertical(this.props.viewAsVertical);
+    const rendition = new Rendition(this.publication, this.viewportRoot,
+                                    cvf);
+    rendition.setViewAsVertical(this.props.viewAsVertical);
 
-    const viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
-                                                     this.props.viewportWidth;
-    const viewportSize2nd = this.props.viewAsVertical ? this.props.viewportWidth :
-                                                        this.props.viewportHeight;
+    const viewportSize = this.props.viewAsVertical ? this.viewportHeight :
+                                                     this.viewportWidth;
+    const viewportSize2nd = this.props.viewAsVertical ? this.viewportWidth :
+                                                        this.viewportHeight;
 
-    this.rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
-    this.rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
-    await this.rendition.setPageLayout({
+    rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
+    rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
+    rendition.setPageLayout({
       spreadMode: SpreadMode.FitViewportAuto,
       pageWidth: this.props.pageWidth,
       pageHeight: this.props.pageHeight,
     });
 
-    this.props.onRenditionCreated(this.rendition);
+    this.props.onRenditionCreated(rendition);
 
-    this.rendition.render();
+    rendition.render();
 
     const scrollMode = this.props.enableScroll ? ScrollMode.Publication : ScrollMode.None;
-    this.rendition.viewport.setScrollMode(scrollMode);
+    rendition.viewport.setScrollMode(scrollMode);
 
-    await this.rendition.viewport.renderAtOffset(0);
+    this.rendCtx = new RenditionContext(rendition, loader);
+
+    this.resizer = new ViewportResizer(this.rendCtx, this.onViewportResize);
+
+    await this.rendCtx.navigator.gotoBegin();
     // await this.rendition.viewport.renderAtSpineItem(4);
+  }
+
+  private updateViewportRoot(viewportRoot: HTMLElement | null): void {
+    this.viewportRoot = viewportRoot;
+  }
+
+  private onViewportResize(): void {
+    this.updateSize();
+  }
+
+  private cleanupResizer(): void {
+    if (this.resizer) {
+      this.resizer.stopListenResize();
+    }
+  }
+
+  private updateSize(): void {
+    if (!this.root || !this.viewportRoot) {
+      return;
+    }
+
+    this.viewportRoot.style.width = `${this.root.clientWidth}px`;
+    this.viewportRoot.style.height = `${this.root.clientHeight}px`;
+
+    const scrollerWidthAdj = this.props.enableScroll ? 15 : 0;
+    this.viewportWidth = this.root.clientWidth - scrollerWidthAdj;
+    this.viewportHeight = this.root.clientHeight;
+
+    if (this.rendCtx) {
+      const viewportSize = this.props.viewAsVertical ? this.viewportHeight : this.viewportWidth;
+      const viewportSize2nd = this.props.viewAsVertical ? this.viewportWidth : this.viewportHeight;
+      this.rendCtx.rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
+      this.rendCtx.rendition.refreshPageLayout();
+    }
   }
 }
