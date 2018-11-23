@@ -4,6 +4,7 @@ import { IFrameLoader,
          Publication,
          R2ContentViewFactory as ContentViewFactory,
          Rendition,
+         ScrollMode,
          SpreadMode } from '@evidentpoint/r2-navigator-web';
 
 export interface IReadiumNGViewProps {
@@ -98,7 +99,9 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.props.onRenditionCreated(this.rendition);
 
     this.rendition.render();
-    this.rendition.viewport.enableScroll(this.props.enableScroll);
+
+    const scrollMode = this.props.enableScroll ? ScrollMode.Publication : ScrollMode.None;
+    this.rendition.viewport.setScrollMode(scrollMode);
 
     await this.rendition.viewport.renderAtOffset(0);
     // await this.rendition.viewport.renderAtSpineItem(4);
