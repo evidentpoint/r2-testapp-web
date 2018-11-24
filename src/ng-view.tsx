@@ -15,7 +15,7 @@ export interface IReadiumNGViewProps {
   pageWidth: number;
   enableScroll: boolean;
   viewAsVertical: boolean;
-  onRenditionCreated(rend: Rendition): void;
+  onRenditionCreated(rendCtx: RenditionContext): void;
 }
 
 const ASSETS_URL = new URL('./assets', window.location.href).toString();
@@ -114,14 +114,13 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
       pageHeight: this.props.pageHeight,
     });
 
-    this.props.onRenditionCreated(rendition);
-
     rendition.render();
 
     const scrollMode = this.props.enableScroll ? ScrollMode.Publication : ScrollMode.None;
     rendition.viewport.setScrollMode(scrollMode);
 
     this.rendCtx = new RenditionContext(rendition, loader);
+    this.props.onRenditionCreated(this.rendCtx);
 
     this.resizer = new ViewportResizer(this.rendCtx, this.onViewportResize);
 

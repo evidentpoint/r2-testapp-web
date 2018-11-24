@@ -4,7 +4,7 @@ import { ReadiumNGNavControl } from './ng-nav-control';
 import { ReadiumNGView } from './ng-view';
 import { ReadiumNGViewSetting } from './ng-view-setting';
 
-import { Navigator, Rendition } from '@readium/navigator-web';
+import { Navigator, Rendition, RenditionContext } from '@readium/navigator-web';
 
 export interface IReadiumNGViewerStates {
   rendition: Rendition | null;
@@ -19,8 +19,8 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
     this.renditionUpdated = this.renditionUpdated.bind(this);
   }
 
-  public renditionUpdated(rend: Rendition): void {
-    this.setState({ rendition: rend, navigator: new Navigator(rend) });
+  public renditionUpdated(rendCtx: RenditionContext): void {
+    this.setState({ rendition: rendCtx.rendition, navigator: rendCtx.navigator });
   }
 
   public render(): ReactNode {
