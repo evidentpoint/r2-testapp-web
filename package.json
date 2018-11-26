@@ -1,10 +1,16 @@
 {
-  "name": "r2-testapp-web",
+  "name": "@readium/testapp-web",
   "version": "0.0.1",
   "description": "A Readium reader testing app for the web",
   "main": "index.js",
   "author": "Lili Deng",
   "license": "MIT",
+  "files": [
+    "public"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "webpack",
     "watch": "npm run build -- --watch",
@@ -14,7 +20,7 @@
     "test": "npm run build && jest --verbose --colors"
   },
   "dependencies": {
-    "@evidentpoint/r2-navigator-web": "^0.0.4",
+    "@readium/navigator-web": "^1.0.0-alpha.0",
     "es6-shim": "^0.35.4",
     "promise-polyfill": "^8.0.0",
     "react": "^16.6.0",
