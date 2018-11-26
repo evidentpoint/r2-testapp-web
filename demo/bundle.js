@@ -50853,10 +50853,6 @@ var ReadiumNGViewSetting = /** @class */ (function (_super) {
     ReadiumNGViewSetting.prototype.render = function () {
         return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null,
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null,
-                "Page Width:",
-                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "text", name: "pageWidth", value: this.state.pageWidth, onChange: this.handleChange })),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", { onClick: this.savePageWidth }, "Update"),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null,
                 "View Settings:",
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { value: this.state.viewSetting, onChange: this.handleViewSettingOptionChange },
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", { value: _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["SettingName"].BackgroundColor, "aria-selected": "false" }, _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["SettingName"].BackgroundColor),
@@ -51005,17 +51001,25 @@ var ReadiumNGView = /** @class */ (function (_super) {
     function ReadiumNGView(props) {
         var _this = _super.call(this, props) || this;
         _this.root = null;
+        _this.viewportRoot = null;
+        _this.viewportWidth = 0;
+        _this.viewportHeight = 0;
         _this.updateRoot = _this.updateRoot.bind(_this);
+        _this.updateViewportRoot = _this.updateViewportRoot.bind(_this);
+        _this.onViewportResize = _this.onViewportResize.bind(_this);
         return _this;
     }
     ReadiumNGView.prototype.render = function () {
-        var readiumViewStyle = {
-            margin: 'auto',
-            width: this.props.viewportWidth,
-            height: this.props.viewportHeight,
+        var containerStyle = {
+            position: 'relative',
             border: '1px dashed black',
         };
-        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { style: readiumViewStyle, ref: this.updateRoot }));
+        Object.assign(containerStyle, this.props.style);
+        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { style: containerStyle, ref: this.updateRoot },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "viewport", ref: this.updateViewportRoot, style: { position: 'absolute' } })));
+    };
+    ReadiumNGView.prototype.componentWillUnmount = function () {
+        this.cleanupResizer();
     };
     ReadiumNGView.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -51025,6 +51029,7 @@ var ReadiumNGView = /** @class */ (function (_super) {
                         if (!this.root) {
                             return [2 /*return*/, Promise.resolve()];
                         }
+                        this.updateSize();
                         // Reflow LTR:
                         return [4 /*yield*/, this.openPublication(ASSETS_URL + "/publications/metamorphosis/manifest.json")];
                     case 1:
@@ -51040,12 +51045,12 @@ var ReadiumNGView = /** @class */ (function (_super) {
     };
     ReadiumNGView.prototype.openPublication = function (webpubUrl) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, loader, cvf, viewportSize, viewportSize2nd, scrollMode;
+            var _a, loader, cvf, rendition, viewportSize, viewportSize2nd, scrollMode;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (!this.root) {
-                            return [2 /*return*/, Promise.resolve()];
+                        if (!this.root || !this.viewportRoot) {
+                            return [2 /*return*/];
                         }
                         _a = this;
                         return [4 /*yield*/, _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["Publication"].fromURL(webpubUrl)];
@@ -51054,33 +51059,59 @@ var ReadiumNGView = /** @class */ (function (_super) {
                         loader = new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["IFrameLoader"](this.publication.getBaseURI());
                         loader.setReadiumCssBasePath(ASSETS_URL + "/readium-css");
                         cvf = new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["R2ContentViewFactory"](loader);
-                        // const cvf = new ContentViewFactory(this.publication);
-                        this.rendition = new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["Rendition"](this.publication, this.root, cvf);
-                        this.rendition.setViewAsVertical(this.props.viewAsVertical);
-                        viewportSize = this.props.viewAsVertical ? this.props.viewportHeight :
-                            this.props.viewportWidth;
-                        viewportSize2nd = this.props.viewAsVertical ? this.props.viewportWidth :
-                            this.props.viewportHeight;
-                        this.rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
-                        this.rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
-                        return [4 /*yield*/, this.rendition.setPageLayout({
-                                spreadMode: _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["SpreadMode"].FitViewportAuto,
-                                pageWidth: this.props.pageWidth,
-                                pageHeight: this.props.pageHeight,
-                            })];
-                    case 2:
-                        _b.sent();
-                        this.props.onRenditionCreated(this.rendition);
-                        this.rendition.render();
+                        rendition = new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["Rendition"](this.publication, this.viewportRoot, cvf);
+                        rendition.setViewAsVertical(this.props.viewAsVertical);
+                        viewportSize = this.props.viewAsVertical ? this.viewportHeight :
+                            this.viewportWidth;
+                        viewportSize2nd = this.props.viewAsVertical ? this.viewportWidth :
+                            this.viewportHeight;
+                        rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
+                        rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
+                        rendition.setPageLayout({
+                            spreadMode: _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["SpreadMode"].FitViewportAuto,
+                            pageWidth: this.props.pageWidth,
+                            pageHeight: this.props.pageHeight,
+                        });
+                        rendition.render();
                         scrollMode = this.props.enableScroll ? _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["ScrollMode"].Publication : _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["ScrollMode"].None;
-                        this.rendition.viewport.setScrollMode(scrollMode);
-                        return [4 /*yield*/, this.rendition.viewport.renderAtOffset(0)];
-                    case 3:
+                        rendition.viewport.setScrollMode(scrollMode);
+                        this.rendCtx = new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["RenditionContext"](rendition, loader);
+                        this.props.onRenditionCreated(this.rendCtx);
+                        this.resizer = new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_1__["ViewportResizer"](this.rendCtx, this.onViewportResize);
+                        return [4 /*yield*/, this.rendCtx.navigator.gotoBegin()];
+                    case 2:
                         _b.sent();
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    ReadiumNGView.prototype.updateViewportRoot = function (viewportRoot) {
+        this.viewportRoot = viewportRoot;
+    };
+    ReadiumNGView.prototype.onViewportResize = function () {
+        this.updateSize();
+    };
+    ReadiumNGView.prototype.cleanupResizer = function () {
+        if (this.resizer) {
+            this.resizer.stopListenResize();
+        }
+    };
+    ReadiumNGView.prototype.updateSize = function () {
+        if (!this.root || !this.viewportRoot) {
+            return;
+        }
+        this.viewportRoot.style.width = this.root.clientWidth + "px";
+        this.viewportRoot.style.height = this.root.clientHeight + "px";
+        var scrollerWidthAdj = this.props.enableScroll ? 15 : 0;
+        this.viewportWidth = this.root.clientWidth - scrollerWidthAdj;
+        this.viewportHeight = this.root.clientHeight;
+        if (this.rendCtx) {
+            var viewportSize = this.props.viewAsVertical ? this.viewportHeight : this.viewportWidth;
+            var viewportSize2nd = this.props.viewAsVertical ? this.viewportWidth : this.viewportHeight;
+            this.rendCtx.rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
+            this.rendCtx.rendition.refreshPageLayout();
+        }
     };
     return ReadiumNGView;
 }(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component));
@@ -51104,7 +51135,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ng_nav_control__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ng-nav-control */ "./src/ng-nav-control.tsx");
 /* harmony import */ var _ng_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ng-view */ "./src/ng-view.tsx");
 /* harmony import */ var _ng_view_setting__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ng-view-setting */ "./src/ng-view-setting.tsx");
-/* harmony import */ var _readium_navigator_web__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @readium/navigator-web */ "./node_modules/@readium/navigator-web/dist/readium-navigator-web.esm.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -51122,7 +51152,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
-
 var ReadiumNGViewer = /** @class */ (function (_super) {
     __extends(ReadiumNGViewer, _super);
     function ReadiumNGViewer(props) {
@@ -51131,14 +51160,22 @@ var ReadiumNGViewer = /** @class */ (function (_super) {
         _this.renditionUpdated = _this.renditionUpdated.bind(_this);
         return _this;
     }
-    ReadiumNGViewer.prototype.renditionUpdated = function (rend) {
-        this.setState({ rendition: rend, navigator: new _readium_navigator_web__WEBPACK_IMPORTED_MODULE_4__["Navigator"](rend) });
+    ReadiumNGViewer.prototype.renditionUpdated = function (rendCtx) {
+        this.setState({ rendition: rendCtx.rendition, navigator: rendCtx.navigator });
     };
     ReadiumNGViewer.prototype.render = function () {
-        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null,
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ng_view__WEBPACK_IMPORTED_MODULE_2__["ReadiumNGView"], { viewportWidth: 800, viewportHeight: 900, pageWidth: 400, pageHeight: 900, enableScroll: false, viewAsVertical: false, onRenditionCreated: this.renditionUpdated }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ng_nav_control__WEBPACK_IMPORTED_MODULE_1__["ReadiumNGNavControl"], { navigator: this.state.navigator }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ng_view_setting__WEBPACK_IMPORTED_MODULE_3__["ReadiumNGViewSetting"], { rendition: this.state.rendition, navigator: this.state.navigator })));
+        var viewerContainerStyle = {
+            display: 'grid',
+            gridTemplateRows: '1fr max-content max-content',
+            gridTemplateAreas: "'BookContent'\n                          'NavControl'\n                          'ViewSetting'",
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+        };
+        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { style: viewerContainerStyle },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ng_view__WEBPACK_IMPORTED_MODULE_2__["ReadiumNGView"], { pageWidth: 400, pageHeight: 900, enableScroll: false, viewAsVertical: false, onRenditionCreated: this.renditionUpdated, style: { gridArea: 'BookContent' } }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ng_nav_control__WEBPACK_IMPORTED_MODULE_1__["ReadiumNGNavControl"], { navigator: this.state.navigator, style: { gridArea: 'NavControl' } }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ng_view_setting__WEBPACK_IMPORTED_MODULE_3__["ReadiumNGViewSetting"], { rendition: this.state.rendition, navigator: this.state.navigator, style: { gridArea: 'ViewSetting' } })));
     };
     return ReadiumNGViewer;
 }(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component));
