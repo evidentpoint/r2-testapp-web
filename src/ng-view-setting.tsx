@@ -6,7 +6,7 @@ import {
   SettingName,
   SpreadMode,
   stringToSettingName,
-} from '@evidentpoint/r2-navigator-web';
+} from '@readium/navigator-web';
 
 export interface IReadiumNGViewSettingProps {
   rendition: Rendition | null;

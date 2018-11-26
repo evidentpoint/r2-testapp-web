@@ -5,7 +5,7 @@ import { IFrameLoader,
          R2ContentViewFactory as ContentViewFactory,
          Rendition,
          ScrollMode,
-         SpreadMode } from '@evidentpoint/r2-navigator-web';
+         SpreadMode } from '@readium/navigator-web';
 
 export interface IReadiumNGViewProps {
   viewportWidth: number;
