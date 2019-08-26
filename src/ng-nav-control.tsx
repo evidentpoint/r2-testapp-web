@@ -24,6 +24,9 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
     // @ts-ignore
     window.prevScreen = this.prevScreen;
 
+    // @ts-ignore
+    Android.showButtons(true);
+
     console.log('Navigation Controls Mounted');
   }
 
@@ -32,6 +35,11 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
     // so it can be accessed by the native side
 
     return null;
+  }
+
+  public componentWillUnmount(): void {
+    // @ts-ignore
+    Android.showButtons(false);
   }
 
   public async nextScreen(): Promise<void> {
