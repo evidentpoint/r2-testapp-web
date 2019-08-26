@@ -42,8 +42,10 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
           enableScroll={ false } viewAsVertical={ false }
           onRenditionCreated={ this.renditionUpdated }
           style={ { gridArea: 'BookContent' } }/>
-        <ReadiumNGNavControl navigator={ this.state.navigator }
-                             style={ { gridArea: 'NavControl' } }/>
+        <ReadiumNGNavControl
+            navigator={ this.state.navigator }
+            style={ { gridArea: 'NavControl' } }
+        />
         <ReadiumNGViewSetting
           rendition={ this.state.rendition }
           navigator={ this.state.navigator}

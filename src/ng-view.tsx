@@ -1,13 +1,13 @@
 import React, { CSSProperties, ReactNode } from 'react';
 
 import { IFrameLoader,
-         Publication,
-         R2ContentViewFactory as ContentViewFactory,
-         Rendition,
-         RenditionContext,
-         ScrollMode,
-         SpreadMode,
-         ViewportResizer } from '@readium/navigator-web';
+    Publication,
+    R2ContentViewFactory as ContentViewFactory,
+    Rendition,
+    RenditionContext,
+    ScrollMode,
+    SpreadMode,
+    ViewportResizer } from '@readium/navigator-web';
 
 export interface IReadiumNGViewProps {
   style?: CSSProperties;
@@ -18,7 +18,9 @@ export interface IReadiumNGViewProps {
   onRenditionCreated(rendCtx: RenditionContext): void;
 }
 
-const ASSETS_URL = new URL('./assets', window.location.href).toString();
+// This URL is reserved by Google for being intercepted
+// by webviews on Android
+const ASSETS_URL = 'http://localhost:8080';
 
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
@@ -50,11 +52,11 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     Object.assign(containerStyle, this.props.style);
 
     return (
-      <div style={ containerStyle }
-        ref={ this.updateRoot }>
-        <div id="viewport" ref={ this.updateViewportRoot }
-             style={{ position: 'absolute' }}/>
-      </div>
+            <div style={ containerStyle }
+                 ref={ this.updateRoot }>
+                <div id="viewport" ref={ this.updateViewportRoot }
+                     style={{ position: 'absolute' }}/>
+            </div>
     );
   }
 
@@ -71,7 +73,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 
     // Reflow LTR:
     await this.openPublication(
-        `${ASSETS_URL}/publications/metamorphosis/manifest.json`);
+                `${ASSETS_URL}/publications/metamorphosis/manifest.json`);
 
     // // FXL:
     // await this.openPublication(
@@ -96,15 +98,15 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     loader.setReadiumCssBasePath(`${ASSETS_URL}/readium-css`);
 
     const cvf = new ContentViewFactory(loader);
-    // const cvf = new ContentViewFactory(this.publication);
+        // const cvf = new ContentViewFactory(this.publication);
     const rendition = new Rendition(this.publication, this.viewportRoot,
                                     cvf);
     rendition.setViewAsVertical(this.props.viewAsVertical);
 
     const viewportSize = this.props.viewAsVertical ? this.viewportHeight :
-                                                     this.viewportWidth;
+            this.viewportWidth;
     const viewportSize2nd = this.props.viewAsVertical ? this.viewportWidth :
-                                                        this.viewportHeight;
+            this.viewportHeight;
 
     rendition.viewport.setViewportSize(viewportSize, viewportSize2nd);
     rendition.viewport.setPrefetchSize(Math.ceil(viewportSize * 0.1));
@@ -125,7 +127,7 @@ export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
     this.resizer = new ViewportResizer(this.rendCtx, this.onViewportResize);
 
     await this.rendCtx.navigator.gotoBegin();
-    // await this.rendition.viewport.renderAtSpineItem(4);
+        // await this.rendition.viewport.renderAtSpineItem(4);
   }
 
   private updateViewportRoot(viewportRoot: HTMLElement | null): void {

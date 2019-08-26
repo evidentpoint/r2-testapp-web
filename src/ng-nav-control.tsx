@@ -14,24 +14,33 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
     this.state = { ngViewport: null };
     this.prevScreen = this.prevScreen.bind(this);
     this.nextScreen = this.nextScreen.bind(this);
+
+    console.log('Navigation Controls Constructor Called');
   }
 
-  public render(): ReactNode {
-    return (
-      <div>
-        <button onClick={ this.prevScreen }>Prev</button>
-        <button onClick={ this.nextScreen }>Next</button>
-      </div>
-    );
+  public componentDidMount(): void {
+    // @ts-ignore
+    window.nextScreen = this.nextScreen;
+    // @ts-ignore
+    window.prevScreen = this.prevScreen;
+
+    console.log('Navigation Controls Mounted');
   }
 
-  private async nextScreen(): Promise<void> {
+  public render(): null {
+    // No longer render buttons, instead bind some functions to window
+    // so it can be accessed by the native side
+
+    return null;
+  }
+
+  public async nextScreen(): Promise<void> {
     if (this.props.navigator) {
       await this.props.navigator.nextScreen();
     }
   }
 
-  private async prevScreen(): Promise<void> {
+  public async prevScreen(): Promise<void> {
     if (this.props.navigator) {
       await this.props.navigator.previousScreen();
     }
