@@ -20,9 +20,15 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
 
   public componentDidMount(): void {
     // @ts-ignore
-    window.nextScreen = this.nextScreen;
+    if (!window.ReadiumSDK) {
+      // @ts-ignore
+      window.ReadiumSDK = {};
+    }
+
     // @ts-ignore
-    window.prevScreen = this.prevScreen;
+    window.ReadiumSDK.nextScreen = this.nextScreen;
+    // @ts-ignore
+    window.ReadiumSDK.prevScreen = this.prevScreen;
 
     // @ts-ignore
     Android.showButtons(true);
