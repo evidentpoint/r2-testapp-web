@@ -3,7 +3,8 @@ import React, { CSSProperties, ReactNode } from 'react';
 import { ReadiumNGView } from './ng-view';
 import { ReadiumNGViewSetting } from './ng-view-setting';
 
-import { Navigator, Rendition, RenditionContext, SettingName } from '@readium/navigator-web';
+import { Navigator, Rendition, RenditionContext, SettingName, SpreadMode } from '@readium/navigator-web';
+import set = Reflect.set;
 
 export interface IReadiumNGViewerStates {
   rendition: Rendition | null;
@@ -100,28 +101,42 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
     };
 
     // @ts-ignore
-    ReadiumSDK.setFontSize = async (size : string) : void => {
-
+    ReadiumSDK.updateViewSetting = async (setting) : void => {
       let loc;
       if (this.state.navigator) {
         loc = await this.state.navigator.getCurrentLocationAsync();
       }
 
-      if (this.state.rendition !== null) {
-        const newSetting = {
-          name: SettingName.FontSize,
-          value: size,
-        };
-        this.state.rendition.updateViewSettings([newSetting]);
+      if (this.state.rendition) {
+        this.state.rendition.updateViewSettings([setting]);
       }
 
       if (loc && this.state.navigator) {
         await this.state.navigator.gotoLocation(loc);
       }
+    };
+
+    // @ts-ignore
+    ReadiumSDK.setFontSize = (size : string) : void => {
+
+      // @ts-ignore
+      ReadiumSDK.updateViewSetting({ name: SettingName.FontSize, value: size });
 
       // Will simply have to keep track of the Font Size in state
       this.setState({ fontSize: parseInt(size, 10) });
 
+    };
+
+    // @ts-ignore
+    ReadiumSDK.setBackgroundColour = (colour : string) => {
+      // @ts-ignore
+      ReadiumSDK.updateViewSetting({ name: SettingName.BackgroundColor, value: colour });
+    };
+
+    // @ts-ignore
+    ReadiumSDK.setSpreadMode = (mode : string) => {
+      // @ts-ignore
+      ReadiumSDK.updateViewSetting({ name: SettingName.SpreadMode, value: mode });
     };
 
   }
@@ -134,6 +149,10 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
   public componentWillUnmount(): void {
     // @ts-ignore
     Android.showButtons(false);
+
+    // @ts-ignore
+    // Kill the SDK on unmount
+    window.ReadiumSDK = undefined;
   }
 
 }
