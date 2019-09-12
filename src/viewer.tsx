@@ -1,17 +1,16 @@
-import React, { CSSProperties, ReactNode } from 'react';
+import React, {CSSProperties, ReactNode} from 'react';
 
-import { ReadiumNGView } from './ng-view';
-import { ReadiumNGViewSetting } from './ng-view-setting';
+import {ReadiumNGView} from './ng-view';
 
-import { Navigator, Rendition, RenditionContext, SettingName, SpreadMode } from '@readium/navigator-web';
-import set = Reflect.set;
+import {Navigator, Rendition, RenditionContext, SettingName} from '@readium/navigator-web';
 
 export interface IReadiumNGViewerStates {
   rendition: Rendition | null;
   navigator: Navigator | null;
-  fontSize: number;
+  continuous: boolean;
 }
 
+// tslint:disable-next-line:completed-docs
 export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates> {
 
   constructor(props: {}) {
@@ -20,9 +19,7 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
     this.state = {
       rendition: null,
       navigator: null,
-
-      // Start with a font size of 100(%?)
-      fontSize: 100,
+      continuous: false,
     };
     this.renditionUpdated = this.renditionUpdated.bind(this);
 
@@ -55,11 +52,13 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
       overflow: 'hidden',
     };
 
+    console.log(`Continuous? ${this.state.continuous}`);
+
     return (
       <div style={ viewerContainerStyle }>
         <ReadiumNGView
           pageWidth={ 400 } pageHeight={ 900 }
-          enableScroll={ false } viewAsVertical={ false }
+          enableScroll={ this.state.continuous } viewAsVertical={ this.state.continuous }
           onRenditionCreated={ this.renditionUpdated }
           style={ { gridArea: 'BookContent' } }/>
 
@@ -93,50 +92,92 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
 
   public registerViewSettingsInterface(): void {
 
-    // @ts-ignore
-    ReadiumSDK.getCurrentFontSize = () : int => {
-      // Currently implemented as a state in the Viewer
-      // Should figure out if Navigator should have an API for this
-      return this.state.fontSize;
-    };
-
-    // @ts-ignore
-    ReadiumSDK.updateViewSetting = async (setting) : void => {
+    const updateSetting = async (setting : object, advanced: boolean = false) : Promise<void> => {
       let loc;
       if (this.state.navigator) {
         loc = await this.state.navigator.getCurrentLocationAsync();
       }
 
       if (this.state.rendition) {
-        this.state.rendition.updateViewSettings([setting]);
+        const input = [setting];
+        if (advanced) {
+          const isAdv = this.state.rendition.viewSettings()
+            .getSetting(SettingName.AdvancedSettings);
+
+          if (!isAdv) {
+            input.push({
+              name: SettingName.AdvancedSettings,
+              value: 'readium-advanced-on',
+            });
+          }
+        }
+        // @ts-ignore
+        this.state.rendition.updateViewSettings(input);
       }
 
-      if (loc && this.state.navigator) {
+      if (this.state.navigator && loc) {
         await this.state.navigator.gotoLocation(loc);
       }
     };
 
     // @ts-ignore
+    ReadiumSDK.updateViewSetting = updateSetting;
+
+    // @ts-ignore
+    ReadiumSDK.getCurrentFontSize = () : int => {
+      // Currently implemented as a state in the Viewer
+      // Should figure out if Navigator should have an API for this
+      if (this.state.rendition) {
+        return this.state.rendition.viewSettings()
+          .getSettingWithDefaultValue(SettingName.FontSize, 100);
+      }
+
+      return 100;
+    };
+
+    // @ts-ignore
     ReadiumSDK.setFontSize = (size : string) : void => {
-
       // @ts-ignore
-      ReadiumSDK.updateViewSetting({ name: SettingName.FontSize, value: size });
-
-      // Will simply have to keep track of the Font Size in state
-      this.setState({ fontSize: parseInt(size, 10) });
+      updateSetting({ name: SettingName.FontSize, value: size });
 
     };
 
     // @ts-ignore
+    ReadiumSDK.setLineHeight = (height : string) : void => {
+      updateSetting({ name: SettingName.LineHeight, value: height }, true);
+    };
+
+    // @ts-ignore
+    ReadiumSDK.setTextAlignment = (align : string) : void => {
+      updateSetting({ name: SettingName.TextAlign, value: align }, true);
+    };
+
+    // @ts-ignore
+    ReadiumSDK.setViewMode = (mode : string) : void => {
+      switch (mode) {
+        case 'page':
+          this.setState({ continuous: false });
+          break;
+        case 'continuous':
+          this.setState({ continuous: true });
+          break;
+        default:
+          console.error('Unknown View Mode');
+      }
+    };
+
+    // Others
+
+    // @ts-ignore
     ReadiumSDK.setBackgroundColour = (colour : string) => {
       // @ts-ignore
-      ReadiumSDK.updateViewSetting({ name: SettingName.BackgroundColor, value: colour });
+      updateSetting({ name: SettingName.BackgroundColor, value: colour });
     };
 
     // @ts-ignore
     ReadiumSDK.setSpreadMode = (mode : string) => {
       // @ts-ignore
-      ReadiumSDK.updateViewSetting({ name: SettingName.SpreadMode, value: mode });
+      updateSetting({ name: SettingName.SpreadMode, value: mode });
     };
 
   }
