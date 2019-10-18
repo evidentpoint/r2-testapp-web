@@ -28,6 +28,7 @@ export class ReadiumNGNavControl extends React.Component<IReadiumNGNavControlPro
   private async nextScreen(): Promise<void> {
     if (this.props.navigator) {
       await this.props.navigator.nextScreen();
+      console.log('yes!');
     }
   }
 
