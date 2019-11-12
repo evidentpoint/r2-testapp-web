@@ -20,7 +20,7 @@ export interface IReadiumNGViewProps {
 
 // This URL is reserved by Google for being intercepted
 // by webviews on Android
-const ASSETS_URL = 'http://localhost:8080';
+const ASSETS_URL = new URL('./assets', window.location.href).toString();
 
 export class ReadiumNGView extends React.Component<IReadiumNGViewProps, {}> {
 

@@ -184,13 +184,10 @@ export class ReadiumNGViewer extends React.Component<{}, IReadiumNGViewerStates>
 
   public componentDidMount(): void {
     // @ts-ignore
-    Android.showButtons(true);
+    Android.DoStuff(true);
   }
 
   public componentWillUnmount(): void {
-    // @ts-ignore
-    Android.showButtons(false);
-
     // @ts-ignore
     // Kill the SDK on unmount
     window.ReadiumSDK = undefined;
